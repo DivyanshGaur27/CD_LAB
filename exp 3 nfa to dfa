@@ -1,0 +1,36 @@
+nfa = {
+    'q0':{
+        'a':['q1','q2'],
+        'b':[]
+    },
+    'q1':{
+        'a':[],
+        'b':[]
+    },
+    'q2':{
+        'a':['q1','q2'],
+        'b':['q2']
+    }
+}
+
+input_symbols = ['a','b']
+dfa = {}
+
+start_state = 'q0'
+final_state = 'q1'
+
+def compute_next_states(state):
+    dfa[state]=dict()
+    tr_set = dict()
+    for inp in input_symbols:
+        tr_set[inp] = []
+        for st in state.split(" "):
+            tr_set[inp] += nfa[st][inp]
+        new_st = " ".join(tr_set[inp])
+        if new_st not in dfa and len(new_st)>0:
+            dfa[new_st] = compute_next_states(new_st)
+    dfa[state] = tr_set
+    return tr_set
+
+compute_next_states(start_state)
+print(dfa)
